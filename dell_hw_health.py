@@ -25,7 +25,7 @@ import logging
 
 requests.packages.urllib3.disable_warnings()
 
-logger = logging.getLogger('GetSystemHelathRedfisGetSystemHelathRedfish')
+logger = logging.getLogger('dell_hw_health')
 
 ENDPOINT = '/redfish/v1/Systems/System.Embedded.1'
 
