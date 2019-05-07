@@ -59,6 +59,7 @@ def is_healthy(status):
 
 def get_nagios_output(status, msg):
     print('%s;%s;%s - %s' % (status, HostName, datetime.now(), msg))
+    sys.exit(status)
 
 
 def get_report_output(msg):
@@ -418,7 +419,8 @@ if __name__ == '__main__':
     parser.add_argument('-critical', help='Retrieve only failure for report',
                         required=False,
                         action='store_true')
-    parser.add_argument('-nagios', help='Nagios output check mode',
+    parser.add_argument('-nagios', help='Nagios output check mode' +
+                        ', only the first option is used',
                         required=False,
                         action='store_true')
 
@@ -446,7 +448,7 @@ if __name__ == '__main__':
         get_storage_disks_information()
     if args['b']:
         get_backplane_information()
-    if args['a']:
+    if args['a'] and not args['nagios']:
         get_memory_information()
         get_cpu_information()
         get_fan_information()
@@ -454,3 +456,5 @@ if __name__ == '__main__':
         get_storage_controller_information()
         get_storage_disks_information()
         get_backplane_information()
+    else:
+        logger.warning('-a option is not enabled in nagios mode')
