@@ -1,8 +1,11 @@
+#! /usr/bin/env python
 #
-# dell_hw_health.py, python script using Redfish API to get system hardware health based
-# on GetSystemHWInventoryREDFISH.py by Texas Roemer <Texas_Roemer@Dell.com>
+# dell_hw_health.py, python script using Redfish API to get system hardware
+# health based on GetSystemHWInventoryREDFISH.py by Texas Roemer
+# <Texas_Roemer@Dell.com>
 #
-# _author_ = Lorenzo Gaggini  <lorenzo.gaggini@dada.eu>, Texas Roemer <Texas_Roemer@Dell.com>
+# _author_ = Lorenzo Gaggini  <lorenzo.gaggini@dada.eu>,
+# Texas Roemer <Texas_Roemer@Dell.com>
 # _version_ = 1.0
 #
 # Copyright (c) 2018, Dell, Inc., 2019, Lorenzo Gaggini
