@@ -284,7 +284,7 @@ def get_storage_controller_information(quiet=False):
         if u'StorageControllers' not in data:
             message = 'WARNING, no information for controller'
             logger.warning(message)
-            return
+            sys.exit(3)
         status = get_status(data[u'StorageControllers'][0])
         if (is_healthy(status) and args['critical']):
             continue
