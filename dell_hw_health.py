@@ -41,10 +41,8 @@ def check_supported_idrac_version():
     if response.status_code != 200:
         msg = 'WARNING, iDRAC version installed does not support ' +\
                'this feature using Redfish API'
-        if args['nagios']:
-            get_nagios_output(3, msg)
-        else:
-            logger.warning(msg)
+        logger.warning(msg)
+        sys.exit(3)
     else:
         pass
 
@@ -82,7 +80,7 @@ def get_system_information():
     data = response.json()
     if response.status_code != 200:
         logger.error('FAIL, get command failed, error is: %s' % data)
-        sys.exit()
+        sys.exit(2)
     serverSN = data[u'SerialNumber']
     HostName = data[u'HostName']
 
@@ -96,21 +94,21 @@ def get_memory_information():
     data = response.json()
     if response.status_code != 200:
         logger.error('FAIL, get command failed, error is: %s' % data)
-        sys.exit()
+        sys.exit(2)
     for i in data[u'Members']:
         dimm = i[u'@odata.id'].split('/')[-1]
         try:
             dimm_slot = re.search('DIMM.+', dimm).group()
         except:
             logger.error('FAIL, unable to get dimm slot info')
-            sys.exit()
+            sys.exit(2)
         response = requests.get('https://%s%s' % (idrac_ip, i[u'@odata.id']),
                                 verify=False,
                                 auth=(idrac_username, idrac_password))
         sub_data = response.json()
         if response.status_code != 200:
             logger.error('FAIL, get command failed, error is: %s' % sub_data)
-            sys.exit()
+            sys.exit(2)
         else:
             status = get_status(sub_data)
             if (is_healthy(status) and args['critical']):
@@ -140,7 +138,7 @@ def get_cpu_information():
     data = response.json()
     if response.status_code != 200:
         logger.error('FAIL, get command failed, error is: %s' % data)
-        sys.exit()
+        sys.exit(2)
     for i in data[u'Members']:
         cpu = i[u'@odata.id'].split('/')[-1]
         response = requests.get('https://%s%s' % (idrac_ip, i[u'@odata.id']),
@@ -149,7 +147,7 @@ def get_cpu_information():
         sub_data = response.json()
         if response.status_code != 200:
             logger.error('FAIL, get command failed, error is: %s' % sub_data)
-            sys.exit()
+            sys.exit(2)
         else:
             status = get_status(sub_data)
             if (is_healthy(status) and args['critical']):
@@ -177,7 +175,7 @@ def get_fan_information():
     data = response.json()
     if response.status_code != 200:
         logger.error('FAIL, get command failed, error is: %s' % data)
-        sys.exit()
+        sys.exit(2)
     if data[u'Links'][u'CooledBy'] == []:
         logger.warning('WARNING, no fans detected for system')
     else:
@@ -189,7 +187,7 @@ def get_fan_information():
             data = response.json()
             if response.status_code != 200:
                 logger.error('FAIL, get command failed, error is: %s' % data)
-                sys.exit()
+                sys.exit(2)
             else:
                 fan = i[u'@odata.id'].split('/')[-1]
                 try:
@@ -226,7 +224,7 @@ def get_ps_information():
     data = response.json()
     if response.status_code != 200:
         logger.error('FAIL, get command failed, error is: %s' % data)
-        sys.exit()
+        sys.exit(2)
     if data[u'Links'][u'PoweredBy'] == []:
         logger.warning('WARNING, no power supplies detected for system')
     else:
@@ -238,7 +236,7 @@ def get_ps_information():
             data = response.json()
             if response.status_code != 200:
                 logger.error('FAIL, get command failed, error is: %s' % data)
-                sys.exit()
+                sys.exit(2)
             else:
                 ps = i[u'@odata.id'].split('/')[-1]
                 status = get_status(data)
@@ -270,7 +268,7 @@ def get_storage_controller_information(quiet=False):
     data = response.json()
     if response.status_code != 200:
         logger.error('FAIL, get command failed, error is: %s' % data)
-        sys.exit()
+        sys.exit(2)
     controller_list = []
     for i in data[u'Members']:
         controller_list.append(i[u'@odata.id'][46:])
@@ -282,7 +280,7 @@ def get_storage_controller_information(quiet=False):
         data = response.json()
         if response.status_code != 200:
             logger.error('FAIL, get command failed, error is: %s' % data)
-            sys.exit()
+            sys.exit(2)
         if u'StorageControllers' not in data:
             message = 'WARNING, no information for controller'
             logger.warning(message)
@@ -313,7 +311,7 @@ def get_storage_disks_information():
         data = response.json()
         if response.status_code != 200:
             logger.error('FAIL, get command failed, error is: %s' % data)
-            sys.exit()
+            sys.exit(2)
         drive_list = []
         if data[u'Drives'] == []:
             message = 'WARNING, no drives detected for %s' % i
@@ -331,7 +329,7 @@ def get_storage_disks_information():
             if response.status_code != 200:
                 logger.error('\n- FAIL, get command failed, error is: %s' %
                              data)
-                sys.exit()
+                sys.exit(2)
             status = get_status(data)
             if (is_healthy(status) and args['critical']):
                 continue
@@ -360,7 +358,7 @@ def get_backplane_information():
     data = response.json()
     if response.status_code != 200:
         logger.error('FAIL, get command failed, error is: %s' % data)
-        sys.exit()
+        sys.exit(2)
     backplane_URI_list = []
     for i in data[u'Members']:
         backplane = i[u'@odata.id']
@@ -369,7 +367,7 @@ def get_backplane_information():
     if backplane_URI_list == []:
         message = '- WARNING, no backplane information detected for system\n'
         print(message)
-        sys.exit()
+        sys.exit(2)
     for i in backplane_URI_list:
         response = requests.get('https://%s%s' % (idrac_ip, i), verify=False,
                                 auth=(idrac_username, idrac_password))
