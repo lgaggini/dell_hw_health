@@ -39,9 +39,12 @@ def check_supported_idrac_version():
                             verify=False,
                             auth=(idrac_username, idrac_password))
     if response.status_code != 200:
-        logger.warning('WARNING, iDRAC version installed does not support' +
-                       'this feature using Redfish API')
-        sys.exit()
+        msg = 'WARNING, iDRAC version installed does not support ' +\
+               'this feature using Redfish API'
+        if args['nagios']:
+            get_nagios_output(3, msg)
+        else:
+            logger.warning(msg)
     else:
         pass
 
