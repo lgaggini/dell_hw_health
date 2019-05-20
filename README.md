@@ -1,6 +1,6 @@
 # dell_hw_health
 
-dell_hw_healt is a python script to check the health status of Dell harware by iDRAC Redfish protocol, inspired by [Dell official python examples](https://github.com/https://github.com/dell/iDRAC-Redfish-Scripting/tree/master/Redfish%20Python).
+dell_hw_healt is a python script to check the health status of Dell harware by iDRAC Redfish protocol, inspired by [Dell official python examples](https://github.com/dell/iDRAC-Redfish-Scripting/tree/master/Redfish%20Python).
 It can be used as Nagios/Naemon check or in a report mode.
 
 ## Quickstart
