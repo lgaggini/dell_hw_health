@@ -385,6 +385,35 @@ def get_backplane_information():
             nagios_msg = 'BACKPLANE is OK'
         get_nagios_output(nagios_status, nagios_msg)
 
+def get_temperature_information():
+    nagios_status = 0
+    nagios_msg = ''
+    response = requests.get('https://%s/redfish/v1/Chassis/System.Embedded.1/Thermal' % (idrac_ip),
+                            verify=False,
+                            auth=(idrac_username, idrac_password))
+    data = response.json()
+
+    if response.status_code != 200:
+        logger.error('FAIL, get command failed, error is: %s' % data)
+        sys.exit(2)
+
+    for i in data[u'Temperatures']:
+        status = get_status(i)
+        if (is_healthy(status) and args['critical']):
+            continue
+        message = '%s %s %s: %s' % (i[u'PhysicalContext'], i[u'MemberId'], i[u'Name'],
+                                    status)
+        if args['nagios'] and not is_healthy(status):
+            nagios_status = 2
+            nagios_msg += message
+        elif not args['nagios']:
+            get_report_output(message)
+    if args['nagios']:
+        if nagios_status == 0:
+            nagios_msg = 'TEMPERATURE is OK'
+        get_nagios_output(nagios_status, nagios_msg)
+
+
 
 if __name__ == '__main__':
 
@@ -410,6 +439,9 @@ if __name__ == '__main__':
                         required=False,
                         action='store_true')
     parser.add_argument('-b', help='Get backplane information only',
+                        required=False,
+                        action='store_true')
+    parser.add_argument('-t', help='Get temperature information only',
                         required=False,
                         action='store_true')
     parser.add_argument('-a', help='Get all information',
@@ -447,6 +479,8 @@ if __name__ == '__main__':
         get_storage_disks_information()
     if args['b']:
         get_backplane_information()
+    if args['t']:
+        get_temperature_information()
     if args['a'] and not args['nagios']:
         get_memory_information()
         get_cpu_information()
@@ -455,5 +489,6 @@ if __name__ == '__main__':
         get_storage_controller_information()
         get_storage_disks_information()
         get_backplane_information()
+        get_temperature_information()
     else:
         logger.warning('-a option is not enabled in nagios mode')
