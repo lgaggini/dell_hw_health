@@ -33,6 +33,7 @@ optional arguments:
   -s          Get storage controllers information only
   -d          Get disks information only
   -b          Get backplane information only
+  -t          Get temperature information only
   -a          Get all information
   -critical   Retrieve only failure for report
   -nagios     Nagios output check mode, only the first option is used
