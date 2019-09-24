@@ -17,7 +17,7 @@ git clone
 ## Usage
 ```
 usage: dell_hw_health.py [-h] -ip IP -u U -p P [-m] [-c] [-f] [-ps] [-s] [-d]
-                         [-b] [-a] [-critical] [-nagios]
+                         [-b] [-t] [-a] [-critical] [-nagios]
 
 Python script using Redfish API to get system hardwareHealth
 
