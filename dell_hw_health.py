@@ -48,11 +48,15 @@ def check_supported_idrac_version():
 
 
 def get_status(data):
-    return data[u'Status']['Health']
+    status = data[u'Status']['Health']
+    if status is None:
+        return 'Unknown'
+    else:
+        return status
 
 
 def is_healthy(status):
-    if status == 'OK' or status is None:
+    if status == 'OK':
         return True
     else:
         return False
@@ -119,7 +123,10 @@ def get_memory_information():
                                                          sub_data[u'PartNumber'],
                                                          status)
             if args['nagios'] and not is_healthy(status):
-                nagios_status = 2
+                if status == 'Unknown' and nagios_status != 2:
+                    nagios_status = 3
+                else:
+                    nagios_status = 2
                 nagios_msg += message
             elif not args['nagios']:
                 get_report_output(message)
@@ -156,7 +163,10 @@ def get_cpu_information():
                                                 sub_data['Model'],
                                                 status)
             if args['nagios'] and not is_healthy(status):
-                nagios_status = 2
+                if status == 'Unknown' and nagios_status != 2:
+                    nagios_status = 3
+                else:
+                    nagios_status = 2
                 nagios_msg += message
             elif not args['nagios']:
                 get_report_output(message)
@@ -205,7 +215,10 @@ def get_fan_information():
                                                     data[u'FanName'],
                                                     status)
                 if args['nagios'] and not is_healthy(status):
-                    nagios_status = 2
+                    if status == 'Unknown' and nagios_status != 2:
+                        nagios_status = 3
+                    else:
+                        nagios_status = 2
                     nagios_msg += message
                 elif not args['nagios']:
                     get_report_output(message)
@@ -248,7 +261,10 @@ def get_ps_information():
                                                              data[u'PartNumber'],
                                                              status)
                 if args['nagios'] and not is_healthy(status):
-                    nagios_status = 2
+                    if status == 'Unknown' and nagios_status != 2:
+                        nagios_status = 3
+                    else:
+                        nagios_status = 2
                     nagios_msg += message
                 elif not args['nagios']:
                     get_report_output(message)
@@ -288,7 +304,10 @@ def get_storage_controller_information(quiet=False):
             continue
         message = 'Server %s %s: %s ' % (serverSN, i, status)
         if args['nagios'] and not is_healthy(status):
-            nagios_status = 2
+            if status == 'Unknown' and nagios_status != 2:
+                nagios_status = 3
+            else:
+                nagios_status = 2
             nagios_msg += message
         elif not args['nagios'] and not quiet:
             get_report_output(message)
@@ -337,7 +356,10 @@ def get_storage_disks_information():
                                                          data[u'PartNumber'],
                                                          status)
             if args['nagios'] and not is_healthy(status):
-                nagios_status = 2
+                if status == 'Unknown' and nagios_status != 2:
+                    nagios_status = 3
+                else:
+                    nagios_status = 2
                 nagios_msg += message
             elif not args['nagios']:
                 get_report_output(message)
@@ -376,7 +398,10 @@ def get_backplane_information():
         message = '%s %s %s: %s ' % (serverSN, data[u'Id'], data[u'Name'],
                                      status)
         if args['nagios'] and not is_healthy(status):
-            nagios_status = 2
+            if status == 'Unknown' and nagios_status != 2:
+                nagios_status = 3
+            else:
+                nagios_status = 2
             nagios_msg += message
         elif not args['nagios']:
             get_report_output(message)
