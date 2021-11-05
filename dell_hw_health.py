@@ -152,9 +152,9 @@ def get_cpu_information():
             status = get_status(sub_data)
             if (is_healthy(status) and args['critical']):
                 continue
-            message = 'Server %s %s %s: %s' % (serverSN, cpu,
-                                               sub_data['Model'],
-                                               status)
+            message = 'Server %s %s %s: %s ' % (serverSN, cpu,
+                                                sub_data['Model'],
+                                                status)
             if args['nagios'] and not is_healthy(status):
                 nagios_status = 2
                 nagios_msg += message
@@ -201,9 +201,9 @@ def get_fan_information():
                 status = get_status(data)
                 if (is_healthy(status) and args['critical']):
                     continue
-                message = 'Server %s %s %s: %s' % (serverSN, fan_slot,
-                                                   data[u'FanName'],
-                                                   status)
+                message = 'Server %s %s %s: %s ' % (serverSN, fan_slot,
+                                                    data[u'FanName'],
+                                                    status)
                 if args['nagios'] and not is_healthy(status):
                     nagios_status = 2
                     nagios_msg += message
@@ -242,11 +242,11 @@ def get_ps_information():
                 status = get_status(data)
                 if (is_healthy(status) and args['critical']):
                     continue
-                message = 'Server %s %s %s %s PN %s: %s' % (serverSN, ps,
-                                                            data[u'Manufacturer'],
-                                                            data[u'Model'],
-                                                            data[u'PartNumber'],
-                                                            status)
+                message = 'Server %s %s %s %s PN %s: %s ' % (serverSN, ps,
+                                                             data[u'Manufacturer'],
+                                                             data[u'Model'],
+                                                             data[u'PartNumber'],
+                                                             status)
                 if args['nagios'] and not is_healthy(status):
                     nagios_status = 2
                     nagios_msg += message
@@ -286,7 +286,7 @@ def get_storage_controller_information(quiet=False):
         status = get_status(data[u'StorageControllers'][0])
         if (is_healthy(status) and args['critical']):
             continue
-        message = 'Server %s %s: %s' % (serverSN, i, status)
+        message = 'Server %s %s: %s ' % (serverSN, i, status)
         if args['nagios'] and not is_healthy(status):
             nagios_status = 2
             nagios_msg += message
@@ -331,11 +331,11 @@ def get_storage_disks_information():
             status = get_status(data)
             if (is_healthy(status) and args['critical']):
                 continue
-            message = 'Server %s %s %s %s PN %s: %s' % (serverSN, iii,
-                                                        data[u'Manufacturer'],
-                                                        data[u'Description'],
-                                                        data[u'PartNumber'],
-                                                        data[u'Status']['Health'])
+            message = 'Server %s %s %s %s PN %s: %s ' % (serverSN, iii,
+                                                         data[u'Manufacturer'],
+                                                         data[u'Description'],
+                                                         data[u'PartNumber'],
+                                                         status)
             if args['nagios'] and not is_healthy(status):
                 nagios_status = 2
                 nagios_msg += message
@@ -373,8 +373,8 @@ def get_backplane_information():
         status = get_status(data)
         if (is_healthy(status) and args['critical']):
             continue
-        message = '%s %s %s: %s' % (serverSN, data[u'Id'], data[u'Name'],
-                                    status)
+        message = '%s %s %s: %s ' % (serverSN, data[u'Id'], data[u'Name'],
+                                     status)
         if args['nagios'] and not is_healthy(status):
             nagios_status = 2
             nagios_msg += message
