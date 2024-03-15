@@ -56,7 +56,21 @@ def get_status(data):
 
 
 def is_healthy(status):
-    if status == 'OK':
+    if status == 'OK' or status is None:
+        return True
+    else:
+        return False
+
+
+def is_warning(status):
+    if status == 'Warning':
+        return True
+    else:
+        return False
+
+
+def is_unknown(status):
+    if status == 'Unknown':
         return True
     else:
         return False
@@ -320,6 +334,7 @@ def get_storage_controller_information(quiet=False):
 def get_storage_disks_information():
     nagios_status = 0
     nagios_msg = ''
+    nagios_warning = 0
     for i in controller_list:
         response = requests.get('https://%s%s/Storage/%s' % (idrac_ip,
                                                              ENDPOINT, i),
@@ -356,13 +371,18 @@ def get_storage_disks_information():
                                                          data[u'PartNumber'],
                                                          status)
             if args['nagios'] and not is_healthy(status):
-                if status == 'Unknown' and nagios_status != 2:
+                if is_warning(status):
+                    nagios_warning += 1
+                    nagios_status = 1
+                elif is_unknown(status) and nagios_status == 0:
                     nagios_status = 3
                 else:
                     nagios_status = 2
                 nagios_msg += message
             elif not args['nagios']:
                 get_report_output(message)
+        if nagios_warning > 1:
+            nagios_status = 2
     if args['nagios']:
         if nagios_status == 0:
             nagios_msg = 'DISKS are OK'
@@ -410,6 +430,7 @@ def get_backplane_information():
             nagios_msg = 'BACKPLANE is OK'
         get_nagios_output(nagios_status, nagios_msg)
 
+
 def get_temperature_information():
     nagios_status = 0
     nagios_msg = ''
@@ -437,7 +458,6 @@ def get_temperature_information():
         if nagios_status == 0:
             nagios_msg = 'TEMPERATURE is OK'
         get_nagios_output(nagios_status, nagios_msg)
-
 
 
 if __name__ == '__main__':
