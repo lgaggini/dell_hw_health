@@ -215,7 +215,7 @@ def get_fan_information():
             else:
                 fan = i[u'@odata.id'].split('/')[-1]
                 try:
-                    fan_slot = re.search('\|\|.+', fan).group().strip('|')
+                    fan_slot = re.search(r'\|\|.+', fan).group().strip('|')
                 except:
                     pass
                 try:
